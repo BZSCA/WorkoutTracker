@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3985" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3985" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/all_workouts.xml" value="0.55" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/app_bar_main.xml" value="0.55" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/exercise_editor.xml" value="0.55" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/fragment_exercise.xml" value="0.5" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/fragment_workout.xml" value="0.33" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/fragment_workout_editor.xml" value="0.55" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/set.xml" value="0.2674772036474164" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/workout.xml" value="0.55" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/workout_editor.xml" value="0.55" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/workout_editor_row.xml" value="0.3109375" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/workouts.xml" value="0.55" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
