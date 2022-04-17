@@ -1,6 +1,13 @@
 package com.workoutapp;
 
-public class ExerciseData {
+import java.io.Serializable;
+
+public class ExerciseData implements Serializable {
+
+    public ExerciseData() {
+        this("", 10.0, 3, 10, 60);
+    }
+
     public ExerciseData(String name, double weight, double sets, int reps, int rest) {
         this.name = name;
         this.weight = weight;

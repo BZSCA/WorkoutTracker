@@ -12,33 +12,51 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.time.DayOfWeek;
 
 public class Workout implements Serializable {
 
     private String name;
     private ArrayList<Exercise> exercises;
     private ArrayList<ExerciseData> exerciseData;
+    private DayOfWeek dayOfWeek;
 
-    public Workout(String name, ArrayList<ExerciseData> exerciseData){
+    public Workout(String name, DayOfWeek dayOfWeek, ArrayList<ExerciseData> exerciseData) {
         this.name = name;
         this.exercises = new ArrayList<>();
-        for (ExerciseData e : exerciseData){
+        this.exerciseData = exerciseData;
+        for (ExerciseData e : exerciseData) {
             this.exercises.add(new Exercise(e));
         }
+        this.dayOfWeek = dayOfWeek;
     }
 
-    public ArrayList<ExerciseData> getExerciseData() { return this.exerciseData; }
+    public void updateWorkout() {
+        exercises.clear();
+        for (ExerciseData e : this.exerciseData) {
+            this.exercises.add(new Exercise(e));
+        }
 
-    public void addExercise(Exercise exercise){
-        exercises.add(exercise);
     }
 
-    public ArrayList<Exercise> getExercises(){
+    public ArrayList<ExerciseData> getExerciseData() {
+        return this.exerciseData;
+    }
+
+    public ArrayList<Exercise> getExercises() {
         return this.exercises;
     }
 
     public int size() {
         return exercises.size();
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return this.dayOfWeek;
     }
 
     public void saveSelf() {

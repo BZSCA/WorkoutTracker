@@ -10,9 +10,15 @@
     <EditText
         android:id="@+id/exerciseName"
         android:layout_width="120sp"
-        android:layout_height="wrap_content"
+        android:layout_height="55sp"
+
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+
         android:textSize="@dimen/workout_editor_text_size"
         android:text="@string/exercise"
+
+
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -24,7 +30,12 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/workout_editor_text_size"
         android:inputType="number"
+
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+
         android:text="Sets"
+
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@id/exerciseName"
         app:layout_constraintRight_toRightOf="parent"
@@ -34,6 +45,10 @@
         android:id="@+id/reps"
         android:layout_width="60sp"
         android:layout_height="wrap_content"
+
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+
         android:textSize="@dimen/workout_editor_text_size"
         android:inputType="number"
         android:text="Reps"
@@ -45,6 +60,10 @@
         android:id="@+id/rest"
         android:layout_width="60sp"
         android:layout_height="wrap_content"
+
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+
         android:textSize="@dimen/workout_editor_text_size"
         android:inputType="number"
         android:text="Rest"

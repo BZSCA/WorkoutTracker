@@ -1,45 +1,33 @@
 package com.workoutapp;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.CountDownTimer;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Observable;
-import java.util.Observer;
-
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHolder> {
 
     private Exercise exercise;
-    private final ExerciseAdapterInterface eainterface;
+    private final ExerciseAdapterInterface eaInterface;
     private Context context;
 
     // data is passed into the constructor
     ExerciseAdapter(WorkoutFragment fragment, Exercise exercise) {
         this.exercise = exercise;
-        eainterface = fragment;
+        eaInterface = fragment;
         this.context = MyApp.getContext();
     }
 
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.set, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rvitem_exercise, parent, false);
         return new ViewHolder(view);
     }
 
@@ -88,12 +76,13 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
                             (keyCode == KeyEvent.KEYCODE_ENTER)) {
                         // Perform action on key press
                         try {
-                            exercise.setWeight(getAdapterPosition(), Double.parseDouble(weight.getText().toString()));
-                            if (exercise.get(getAdapterPosition()).getState() && getAdapterPosition() == exercise.getCurrent()) {
+                            int position = getBindingAdapterPosition();
+                            exercise.setWeight(position, Double.parseDouble(weight.getText().toString()));
+                            if (exercise.get(position).getState() && position == exercise.getCurrent()) {
                                 exercise.progressCurrent();
-                                eainterface.startTimer();
-                                notifyItemChanged(getAdapterPosition());
-                                notifyItemChanged(getAdapterPosition() + 1);
+                                eaInterface.startTimer();
+                                notifyItemChanged(position);
+                                notifyItemChanged(position + 1);
                             }
                         } catch (NumberFormatException e) {
                         }
@@ -107,11 +96,11 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
 
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    double w = exercise.get(getAdapterPosition()).getWeight();
+                    double w = exercise.get(getBindingAdapterPosition()).getWeight();
 
-                    if(hasFocus){
+                    if (hasFocus) {
                         if (w < 0)
-                        weight.setText("");
+                            weight.setText("");
                     } else {
                         if (w < 0) {
                             setNumberColor(w, weight);
@@ -129,12 +118,13 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
                             (keyCode == KeyEvent.KEYCODE_ENTER)) {
                         // Perform action on key press
                         try {
-                            exercise.setReps(getAdapterPosition(), Integer.parseInt(reps.getText().toString()));
-                            if (exercise.get(getAdapterPosition()).getState() && getAdapterPosition() == exercise.getCurrent()) {
+                            int position = getBindingAdapterPosition();
+                            exercise.setReps(position, Integer.parseInt(reps.getText().toString()));
+                            if (exercise.get(position).getState() && position == exercise.getCurrent()) {
                                 exercise.progressCurrent();
-                                eainterface.startTimer();
-                                notifyItemChanged(getAdapterPosition());
-                                notifyItemChanged(getAdapterPosition() + 1);
+                                eaInterface.startTimer();
+                                notifyItemChanged(position);
+                                notifyItemChanged(position + 1);
                             }
                         } catch (NumberFormatException e) {
                         }
@@ -149,10 +139,10 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
 
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    Log.i("adapter position", String.valueOf(getAdapterPosition()));
-                    int r = exercise.get(getAdapterPosition()).getReps();
+                    //Log.i("adapter position", String.valueOf(getBindingAdapterPosition()));
+                    int r = exercise.get(getBindingAdapterPosition()).getReps();
 
-                    if(hasFocus){
+                    if (hasFocus) {
                         if (r < 0)
                             reps.setText("");
                     } else {

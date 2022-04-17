@@ -5,13 +5,15 @@
       <map>
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3985" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3985" />
-        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/activity_main.xml" value="0.5" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/all_workouts.xml" value="0.55" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/app_bar_main.xml" value="0.55" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/exercise_editor.xml" value="0.55" />
-        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/fragment_exercise.xml" value="0.5" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/fragment_exercise.xml" value="0.23076923076923078" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/fragment_workout.xml" value="0.33" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/fragment_workout_editor.xml" value="0.55" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/rvitem_exercise.xml" value="0.2674772036474164" />
+        <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/rvitem_workout_editor.xml" value="0.5" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/set.xml" value="0.2674772036474164" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/workout.xml" value="0.55" />
         <entry key="..\:/Users/Benny/AndroidStudioProjects/WorkoutTracker/app/src/main/res/layout/workout_editor.xml" value="0.55" />

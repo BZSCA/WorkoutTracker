@@ -25,7 +25,7 @@ import java.util.Observer;
  * Use the {@link WorkoutFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WorkoutFragment extends Fragment implements ExerciseAdapter.ExerciseAdapterInterface{
+public class WorkoutFragment extends Fragment implements ExerciseAdapter.ExerciseAdapterInterface, ExerciseFragment.ExerciseNavigation {
 
     private View view;
     private Workout workout;
@@ -79,20 +79,14 @@ public class WorkoutFragment extends Fragment implements ExerciseAdapter.Exercis
         view.findViewById(R.id.prevButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (current > 0){
-                    replaceFragment(fragments.get(current - 1));
-                }
-                current = current - 1;
+                previous();
             }
         });
 
         view.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (current + 1 < fragments.size()){
-                    replaceFragment(fragments.get(current + 1));
-                }
-                current = current + 1;
+                next();
             }
         });
 
@@ -105,11 +99,10 @@ public class WorkoutFragment extends Fragment implements ExerciseAdapter.Exercis
         });
 
 
-
         return view;
     }
 
-    private void replaceFragment(ExerciseFragment fragment){
+    private void replaceFragment(ExerciseFragment fragment) {
         FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.exerciseLayout, fragment);
         fragmentTransaction.commit();
@@ -121,7 +114,7 @@ public class WorkoutFragment extends Fragment implements ExerciseAdapter.Exercis
         if (timer != null) {
             timer.cancel();
         }
-        timer = new CountDownTimer(workout.getExercises().get(current).getRest()* 1000L, 1000) {
+        timer = new CountDownTimer(workout.getExercises().get(current).getRest() * 1000L, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 timerText.setText(String.valueOf(millisUntilFinished / 1000));
@@ -143,4 +136,19 @@ public class WorkoutFragment extends Fragment implements ExerciseAdapter.Exercis
         }
     };
 
+    @Override
+    public void previous() {
+        if (current > 0) {
+            replaceFragment(fragments.get(current - 1));
+        }
+        current = current - 1;
+    }
+
+    @Override
+    public void next() {
+        if (current + 1 < fragments.size()) {
+            replaceFragment(fragments.get(current + 1));
+        }
+        current = current + 1;
+    }
 }

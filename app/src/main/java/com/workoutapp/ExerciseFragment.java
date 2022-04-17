@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,9 @@ public class ExerciseFragment extends Fragment {
     private static final String ARG_PARAM1 = "exercise";
 
     View view;
-    Exercise exercise;
     ExerciseAdapter adapter;
-
+    Exercise exercise;
+    WorkoutFragment workoutFragment;
 
     public ExerciseFragment() {
         // Required empty public constructor
@@ -53,6 +54,8 @@ public class ExerciseFragment extends Fragment {
             exercise = (Exercise) getArguments().getSerializable(ARG_PARAM1);
         }
 
+        workoutFragment = (WorkoutFragment) getParentFragment();
+
     }
 
     @Override
@@ -65,40 +68,45 @@ public class ExerciseFragment extends Fragment {
 
         TextView timerText = view.findViewById(R.id.timer);
         RecyclerView recyclerView = view.findViewById(R.id.fragmentRvItem);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()){
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()) {
             @Override
             public boolean requestChildRectangleOnScreen(RecyclerView parent, View child, Rect rect, boolean immediate, boolean focusedChildVisible) {
                 return false;
             }
         });
 
+        setupOnSwipeListener(recyclerView);
 
         adapter = new ExerciseAdapter(((WorkoutFragment) ExerciseFragment.this.getParentFragment()), exercise);
         recyclerView.setAdapter(adapter);
-        //setupOnSwipeListener(view);
         return view;
 
     }
 
     @Override
-    public void onPause(){
-        super.onPause();
-
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
-//    private void setupOnSwipeListener(View view){
-//        view.setOnTouchListener(new OnSwipeTouchListener(MyApp.getContext()) {
-//            @Override
-//            public void onSwipeLeft(){
-//                Toast.makeText(MyApp.getContext(),"Swipe left", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onSwipeRight(){
-//                Toast.makeText(MyApp.getContext(),"Swipe right", Toast.LENGTH_SHORT).show();
-//            }
-//
-//        });
-//    }
+    private void setupOnSwipeListener(View view) {
+        view.setOnTouchListener(new OnSwipeTouchListener(MyApp.getContext()) {
+            @Override
+            public void onSwipeLeft() {
+                workoutFragment.next();
+            }
+
+            @Override
+            public void onSwipeRight() {
+                workoutFragment.previous();
+            }
+
+        });
+    }
+
+    interface ExerciseNavigation {
+        void previous();
+        void next();
+    }
 
 }

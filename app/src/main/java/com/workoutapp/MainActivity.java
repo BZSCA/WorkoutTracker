@@ -16,10 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,10 +32,16 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
+import java.time.DayOfWeek;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
-    Workout workout;
+
+    ArrayList<WorkoutFragment> workoutFragments;
+    ArrayList<PrimaryDrawerItem> drawerWorkouts;
+    Drawer result;
+    TextView toolbarTitle;
+    WorkoutEditorFragment workoutEditorFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,43 +49,34 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        toolbarTitle = findViewById(R.id.toolbarTitle);
 
         ArrayList<ExerciseData> exercises = new ArrayList<>();
 
-        exercises.add(new ExerciseData("dips", 5.0, 4, 10, 100 ));
-        exercises.add(new ExerciseData("curls", 20.0, 3, 12, 60 ));
+        exercises.add(new ExerciseData("dips", 5.0, 4, 10, 100));
+        exercises.add(new ExerciseData("curls", 20.0, 3, 12, 60));
 
 
-        workout = new Workout("Test", exercises);
+        Workout workout = new Workout("TestWorkout", DayOfWeek.FRIDAY, exercises);
 
         Log.i("set size", String.valueOf(workout.getExercises().get(0).size()));
 
-        Fragment workoutFragment = WorkoutFragment.newInstance(workout);
+        Routine routine = new Routine("TestRoutine");
+        routine.addWorkout(workout);
 
-        replaceFragment(workoutFragment);
+        workoutFragments = new ArrayList<>();
+        workoutFragments.add(WorkoutFragment.newInstance(workout));
 
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.Workout);
-        SecondaryDrawerItem item2 = new SecondaryDrawerItem().withIdentifier(2).withName(R.string.Workout_Editor);
+        workoutEditorFragment = WorkoutEditorFragment.newInstance(workout);
 
+        replaceFragment(workoutFragments.get(0));
 
-        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        buildToolbar(routine);
 
-        new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .addDrawerItems(
-                        //pass your items here
-                        item1,
-                        new DividerDrawerItem(),
-                        item2,
-                        new SecondaryDrawerItem().withName("test")
-                )
-                .build();
 
     }
 
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainLayout, fragment);
         fragmentTransaction.commit();
@@ -89,7 +88,7 @@ public class MainActivity extends AppCompatActivity  {
         try {
             FileInputStream fileIn = new FileInputStream(todoFile);
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            workout = (Workout) in.readObject();
+            Workout workout = (Workout) in.readObject();
             in.close();
             fileIn.close();
             return true;
@@ -97,6 +96,53 @@ public class MainActivity extends AppCompatActivity  {
             Log.e("failed to read", i.toString());
             return false;
         }
+    }
+
+    private void buildToolbar(Routine routine) {
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+
+        DrawerBuilder drawerBuilder = new DrawerBuilder().withActivity(this).withToolbar(toolbar);
+
+        for (int i = 0; i < routine.getWorkouts().size(); i++) {
+            //drawerWorkouts.add(new PrimaryDrawerItem().withIdentifier(1).withName("Routine Selector"));
+            drawerBuilder.addDrawerItems(new SecondaryDrawerItem().withIdentifier(i).withName(routine.getWorkouts().get(i).getName() + " " + routine.getWorkouts().get(i).getDayOfWeek()));
+        }
+
+        drawerBuilder.addDrawerItems(
+                new DividerDrawerItem(),
+                new PrimaryDrawerItem().withIdentifier((long) -3).withName("Routine Selector"),
+                new PrimaryDrawerItem().withIdentifier((long) -4).withName("Workout Editor"));
+
+
+        result = drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+
+
+                if (drawerItem != null) {
+                    int id = Long.valueOf(drawerItem.getIdentifier()).intValue();
+                    Log.i("replaceFragment", String.valueOf(id));
+                    switch (id) {
+                        case -3:
+                            Log.i("replaceFragment", "Routine Selector");
+                            result.closeDrawer();
+                            break;
+                        case -4:
+                            replaceFragment(workoutEditorFragment);
+                            toolbarTitle.setText("Workout Editor");
+                            result.closeDrawer();
+                            break;
+
+                        default:
+                            replaceFragment(workoutFragments.get((int) id));
+                            toolbarTitle.setText(routine.getWorkouts().get((int) id).getName());
+                            result.closeDrawer();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        }).build();
     }
 
 }

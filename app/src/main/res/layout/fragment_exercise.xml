@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="Task Name"
+
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -38,26 +39,29 @@
         android:id="@+id/weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:gravity="center"
 
         android:text="Weight"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
 
-        app:layout_constraintEnd_toStartOf="@id/reps"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/taskName" />
+        app:layout_constraintTop_toBottomOf="@id/taskName"
+        app:layout_constraintHorizontal_bias="0.25"/>
 
     <TextView
         android:id="@+id/reps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
 
         android:text="Reps"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/weight"
-        app:layout_constraintTop_toTopOf="@id/weight" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/weight"
+        app:layout_constraintHorizontal_bias="0.75"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
