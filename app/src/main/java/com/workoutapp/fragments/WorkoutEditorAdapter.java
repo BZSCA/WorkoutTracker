@@ -1,4 +1,4 @@
-package com.workoutapp;
+package com.workoutapp.fragments;
 
 import android.content.Context;
 import android.util.Log;
@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.workoutapp.R;
+import com.workoutapp.dataclasses.ExerciseData;
 
 import java.util.ArrayList;
 

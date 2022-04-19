@@ -1,4 +1,4 @@
-package com.workoutapp;
+package com.workoutapp.fragments;
 
 import android.os.Bundle;
 
@@ -6,16 +6,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import com.workoutapp.R;
+import com.workoutapp.dataclasses.Exercise;
+import com.workoutapp.dataclasses.Workout;
+
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -33,6 +33,7 @@ public class WorkoutFragment extends Fragment implements ExerciseAdapter.Exercis
     private TextView timerText;
     int current;
     private CountDownTimer timer;
+    private Button nextButton;
 
     private static final String ARG_PARAM1 = "workout";
     private static final String ARG_PARAM2 = "current";
@@ -83,7 +84,9 @@ public class WorkoutFragment extends Fragment implements ExerciseAdapter.Exercis
             }
         });
 
-        view.findViewById(R.id.nextButton).setOnClickListener(new View.OnClickListener() {
+        nextButton = view.findViewById(R.id.nextButton);
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 next();
@@ -140,15 +143,22 @@ public class WorkoutFragment extends Fragment implements ExerciseAdapter.Exercis
     public void previous() {
         if (current > 0) {
             replaceFragment(fragments.get(current - 1));
+            current = current - 1;
+            nextButton.setText("Next");
         }
-        current = current - 1;
     }
 
     @Override
     public void next() {
+
         if (current + 1 < fragments.size()) {
             replaceFragment(fragments.get(current + 1));
+            current = current + 1;
         }
-        current = current + 1;
+
+        if (current == fragments.size() - 1) {
+            nextButton.setText("Finish");
+            workout.saveFinishedWorkout();
+        }
     }
 }

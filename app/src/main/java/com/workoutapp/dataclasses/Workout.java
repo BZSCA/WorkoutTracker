@@ -1,10 +1,11 @@
-package com.workoutapp;
+package com.workoutapp.dataclasses;
 
-import android.os.Build;
-import android.os.Environment;
+import android.text.Editable;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
+import com.workoutapp.MyApp;
+import com.workoutapp.dataclasses.Exercise;
+import com.workoutapp.dataclasses.ExerciseData;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,6 +40,8 @@ public class Workout implements Serializable {
 
     }
 
+    public void setDayOfWeek(DayOfWeek dayOfWeek) { this.dayOfWeek = dayOfWeek; }
+
     public ArrayList<ExerciseData> getExerciseData() {
         return this.exerciseData;
     }
@@ -69,8 +72,25 @@ public class Workout implements Serializable {
             out.close();
             fileOut.close();
         } catch (IOException e) {
+            Log.e("Workout IOexception", e.toString());
+        }
+    }
+
+    //consider using database implementation with ROOM or SQlite
+    public void saveFinishedWorkout(){
+        File finishedWorkout = new File(MyApp.getContext().getDataDir(), "/Workout History" + "/" + name + System.currentTimeMillis());
+        try {
+            FileOutputStream fileOut = new FileOutputStream(finishedWorkout);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+            out.close();
+            fileOut.close();
+        } catch (IOException e) {
             Log.e("Save exception", e.toString());
         }
     }
 
+    public void setName(String string) {
+        this.name = string;
+    }
 }

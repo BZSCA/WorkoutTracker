@@ -1,7 +1,6 @@
-package com.workoutapp;
+package com.workoutapp.fragments;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,10 @@ import android.widget.EditText;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.workoutapp.MyApp;
+import com.workoutapp.R;
+import com.workoutapp.dataclasses.Exercise;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHolder> {
 

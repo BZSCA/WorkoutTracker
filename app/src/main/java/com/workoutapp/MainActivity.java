@@ -1,20 +1,13 @@
 package com.workoutapp;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -22,52 +15,60 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.workoutapp.dataclasses.ExerciseData;
+import com.workoutapp.dataclasses.Routine;
+import com.workoutapp.dataclasses.Workout;
+import com.workoutapp.fragments.WorkoutEditorFragment;
+import com.workoutapp.fragments.WorkoutFragment;
+import com.workoutapp.fragments.WorkoutSelectorFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Observable;
-import java.util.Observer;
 import java.time.DayOfWeek;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Routine.Interface{
 
 
-    ArrayList<WorkoutFragment> workoutFragments;
-    ArrayList<PrimaryDrawerItem> drawerWorkouts;
-    Drawer result;
-    TextView toolbarTitle;
-    WorkoutEditorFragment workoutEditorFragment;
+    private ArrayList<WorkoutFragment> workoutFragments;
+    private ArrayList<PrimaryDrawerItem> drawerWorkouts;
+    private Drawer result;
+    private TextView toolbarTitle;
+    private WorkoutSelectorFragment workoutSelectorFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
+        createDirectories();
+
         setContentView(R.layout.activity_main);
         toolbarTitle = findViewById(R.id.toolbarTitle);
+
+        Routine routine = new Routine("TestRoutine", this);
 
         ArrayList<ExerciseData> exercises = new ArrayList<>();
 
         exercises.add(new ExerciseData("dips", 5.0, 4, 10, 100));
         exercises.add(new ExerciseData("curls", 20.0, 3, 12, 60));
+        routine.getWorkouts().add(new Workout("Arms?", DayOfWeek.FRIDAY, new ArrayList<>(exercises)));
 
-
-        Workout workout = new Workout("TestWorkout", DayOfWeek.FRIDAY, exercises);
-
-        Log.i("set size", String.valueOf(workout.getExercises().get(0).size()));
-
-        Routine routine = new Routine("TestRoutine");
-        routine.addWorkout(workout);
+        exercises.clear();
+        exercises.add(new ExerciseData("squats", 5.0, 4, 10, 100));
+        exercises.add(new ExerciseData("lunges", 20.0, 3, 12, 60));
+        routine.getWorkouts().add(new Workout("Legs", DayOfWeek.TUESDAY, new ArrayList<>(exercises)));
 
         workoutFragments = new ArrayList<>();
-        workoutFragments.add(WorkoutFragment.newInstance(workout));
 
-        workoutEditorFragment = WorkoutEditorFragment.newInstance(workout);
+        for (Workout w : routine.getWorkouts()) {
+            workoutFragments.add(WorkoutFragment.newInstance(w));
+        }
+
+        workoutSelectorFragment = workoutSelectorFragment.newInstance(routine);
 
         replaceFragment(workoutFragments.get(0));
 
@@ -98,27 +99,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void buildToolbar(Routine routine) {
+    @Override
+    public void buildToolbar(Routine routine) {
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
 
         DrawerBuilder drawerBuilder = new DrawerBuilder().withActivity(this).withToolbar(toolbar);
 
         for (int i = 0; i < routine.getWorkouts().size(); i++) {
             //drawerWorkouts.add(new PrimaryDrawerItem().withIdentifier(1).withName("Routine Selector"));
-            drawerBuilder.addDrawerItems(new SecondaryDrawerItem().withIdentifier(i).withName(routine.getWorkouts().get(i).getName() + " " + routine.getWorkouts().get(i).getDayOfWeek()));
+            drawerBuilder.addDrawerItems(new SecondaryDrawerItem().withIdentifier(i).withName(routine.getWorkouts().get(i).getName()));
         }
 
         drawerBuilder.addDrawerItems(
                 new DividerDrawerItem(),
                 new PrimaryDrawerItem().withIdentifier((long) -3).withName("Routine Selector"),
-                new PrimaryDrawerItem().withIdentifier((long) -4).withName("Workout Editor"));
-
+                new PrimaryDrawerItem().withIdentifier((long) -4).withName("Workout Editor"),
+                new PrimaryDrawerItem().withIdentifier((long) -5).withName("Workout History Viewer"));
 
         result = drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-
-
                 if (drawerItem != null) {
                     int id = Long.valueOf(drawerItem.getIdentifier()).intValue();
                     Log.i("replaceFragment", String.valueOf(id));
@@ -128,11 +128,15 @@ public class MainActivity extends AppCompatActivity {
                             result.closeDrawer();
                             break;
                         case -4:
-                            replaceFragment(workoutEditorFragment);
-                            toolbarTitle.setText("Workout Editor");
+                            replaceFragment(workoutSelectorFragment);
+                            toolbarTitle.setText("Workout Selector");
                             result.closeDrawer();
                             break;
-
+                        case -5:
+                            //replaceFragment();
+                            toolbarTitle.setText("Workout History");
+                            result.closeDrawer();
+                            break;
                         default:
                             replaceFragment(workoutFragments.get((int) id));
                             toolbarTitle.setText(routine.getWorkouts().get((int) id).getName());
@@ -143,6 +147,21 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         }).build();
+    }
+
+    private void createDirectories(){
+        File routines = new File(MyApp.getContext().getDataDir(), "/Routines");
+        if (routines.isDirectory()){
+            //loop through and load routines
+        }
+        else{
+            routines.mkdir();
+        }
+
+        File workoutHistory = new File(MyApp.getContext().getDataDir(), "/Workout History");
+        if (!workoutHistory.isDirectory()){
+            workoutHistory.mkdir();
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-package com.workoutapp;
+package com.workoutapp.dataclasses;
 
 import java.io.Serializable;
 
