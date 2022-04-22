@@ -22,6 +22,10 @@ import com.workoutapp.dataclasses.ExerciseData;
 import com.workoutapp.dataclasses.Routine;
 import com.workoutapp.dataclasses.Workout;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 
@@ -30,18 +34,20 @@ import java.util.ArrayList;
  * Use the {@link WorkoutSelectorFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WorkoutSelectorFragment extends Fragment implements WorkoutSelectorAdapter.ItemClickListener{
+public class WorkoutSelectorFragment extends Fragment implements WorkoutSelectorAdapter.ItemClickListener {
 
     private static final String ARG_PARAM2 = "routine";
     private WorkoutSelectorAdapter adapter;
     private Routine routine;
+    private WorkoutSelectorFragment.Interface mainActivity;
 
-    public WorkoutSelectorFragment() {
+    public WorkoutSelectorFragment(WorkoutSelectorFragment.Interface mainActivity) {
+        this.mainActivity = mainActivity;
         // Required empty public constructor
     }
 
-    public static WorkoutSelectorFragment newInstance(Routine routine) {
-        WorkoutSelectorFragment fragment = new WorkoutSelectorFragment();
+    public static WorkoutSelectorFragment newInstance(Routine routine, WorkoutSelectorFragment.Interface mainActivity) {
+        WorkoutSelectorFragment fragment = new WorkoutSelectorFragment(mainActivity);
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM2, routine);
         fragment.setArguments(args);
@@ -72,7 +78,7 @@ public class WorkoutSelectorFragment extends Fragment implements WorkoutSelector
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Perform action on key press
                     routine.setName(String.valueOf(routineName.getText()));
-                    routine.saveRoutine();
+                    saveRoutine(routine);
                 }
                 return true;
             }
@@ -124,5 +130,15 @@ public class WorkoutSelectorFragment extends Fragment implements WorkoutSelector
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
+    }
+
+
+    public void saveRoutine(Routine routine){
+        mainActivity.buildToolbar(routine);
+        Routine.saveRoutine(routine);
+    }
+
+    public interface Interface {
+        void buildToolbar(Routine routine);
     }
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_centerInParent="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@color/purple_200">
+
+
+    <TextView
+        android:id="@+id/popupText"
+        android:textAlignment="center"
+        android:text="Name your Workout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+    <EditText
+        android:id="@+id/newRoutineName"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@id/popupText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <Button
+        android:id="@+id/popupCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Cancel"
+
+        app:layout_constraintTop_toBottomOf="@id/newRoutineName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"/>
+
+
+    <Button
+        android:id="@+id/popupAccept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Accept"
+
+        app:layout_constraintTop_toTopOf="@id/popupCancel"
+        app:layout_constraintBottom_toBottomOf="@id/popupCancel"
+        app:layout_constraintLeft_toRightOf="@id/popupCancel"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.3"/>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

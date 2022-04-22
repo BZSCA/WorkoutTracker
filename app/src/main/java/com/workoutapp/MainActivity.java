@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -18,18 +21,22 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.workoutapp.dataclasses.ExerciseData;
 import com.workoutapp.dataclasses.Routine;
 import com.workoutapp.dataclasses.Workout;
+import com.workoutapp.fragments.RoutineSelectorAdapter;
+import com.workoutapp.fragments.RoutineSelectorFragment;
 import com.workoutapp.fragments.WorkoutEditorFragment;
 import com.workoutapp.fragments.WorkoutFragment;
 import com.workoutapp.fragments.WorkoutSelectorFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.time.DayOfWeek;
 
-public class MainActivity extends AppCompatActivity implements Routine.Interface{
+public class MainActivity extends AppCompatActivity implements WorkoutSelectorFragment.Interface{
 
 
     private ArrayList<WorkoutFragment> workoutFragments;
@@ -37,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements Routine.Interface
     private Drawer result;
     private TextView toolbarTitle;
     private WorkoutSelectorFragment workoutSelectorFragment;
-
+    private RoutineSelectorFragment routineSelectorFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements Routine.Interface
         setContentView(R.layout.activity_main);
         toolbarTitle = findViewById(R.id.toolbarTitle);
 
-        Routine routine = new Routine("TestRoutine", this);
+        Routine routine = new Routine("TestRoutine");
 
         ArrayList<ExerciseData> exercises = new ArrayList<>();
 
@@ -68,7 +75,8 @@ public class MainActivity extends AppCompatActivity implements Routine.Interface
             workoutFragments.add(WorkoutFragment.newInstance(w));
         }
 
-        workoutSelectorFragment = workoutSelectorFragment.newInstance(routine);
+        workoutSelectorFragment = workoutSelectorFragment.newInstance(routine, this);
+        routineSelectorFragment = routineSelectorFragment.newInstance();
 
         replaceFragment(workoutFragments.get(0));
 
@@ -81,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements Routine.Interface
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.mainLayout, fragment);
         fragmentTransaction.commit();
-
     }
 
     private boolean readItems() {
@@ -113,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements Routine.Interface
         drawerBuilder.addDrawerItems(
                 new DividerDrawerItem(),
                 new PrimaryDrawerItem().withIdentifier((long) -3).withName("Routine Selector"),
-                new PrimaryDrawerItem().withIdentifier((long) -4).withName("Workout Editor"),
+                new PrimaryDrawerItem().withIdentifier((long) -4).withName("Routine Editor"),
                 new PrimaryDrawerItem().withIdentifier((long) -5).withName("Workout History Viewer"));
 
         result = drawerBuilder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -124,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements Routine.Interface
                     Log.i("replaceFragment", String.valueOf(id));
                     switch (id) {
                         case -3:
-                            Log.i("replaceFragment", "Routine Selector");
+                            replaceFragment(routineSelectorFragment);
+                            toolbarTitle.setText("Routine Selector");
                             result.closeDrawer();
                             break;
                         case -4:
@@ -149,6 +157,10 @@ public class MainActivity extends AppCompatActivity implements Routine.Interface
         }).build();
     }
 
+    public void setRoutine(){
+
+    }
+
     private void createDirectories(){
         File routines = new File(MyApp.getContext().getDataDir(), "/Routines");
         if (routines.isDirectory()){
@@ -162,6 +174,19 @@ public class MainActivity extends AppCompatActivity implements Routine.Interface
         if (!workoutHistory.isDirectory()){
             workoutHistory.mkdir();
         }
+    }
+
+    private Routine getDefaultRoutine(){
+        SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
+        String routineDefault = sharedPreferences.getString("routineDefault", null);
+
+        if (routineDefault == null){
+            ;
+        }
+        else{
+            ;
+        }
+        return null;
     }
 
 }

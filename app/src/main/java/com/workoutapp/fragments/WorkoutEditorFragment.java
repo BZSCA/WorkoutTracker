@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,10 @@ import com.workoutapp.R;
 import com.workoutapp.dataclasses.Routine;
 import com.workoutapp.dataclasses.Workout;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.time.DayOfWeek;
 
 /**
@@ -40,9 +45,9 @@ public class WorkoutEditorFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "routine";
     private static final String ARG_PARAM2 = "position";
+    private static final String ARG_PARAM3 = "parentFragment";
 
     public WorkoutEditorFragment() {
-        // Required empty public constructor
     }
 
     public static WorkoutEditorFragment newInstance(Routine routine, int position) {
@@ -95,7 +100,7 @@ public class WorkoutEditorFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 routine.getWorkouts().get(position).setDayOfWeek(DayOfWeek.values()[i]);
-                routine.saveRoutine();
+                Routine.saveRoutine(routine);
             }
 
             @Override
@@ -117,13 +122,12 @@ public class WorkoutEditorFragment extends Fragment {
         adapter = new WorkoutEditorAdapter(getContext(), workout.getExerciseData());
         recyclerView.setAdapter(adapter);
 
-
         view.findViewById(R.id.saveWorkout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 adapter.saveAll();
                 workout.updateWorkout();
-                routine.saveRoutine();
+                Routine.saveRoutine(routine);
                 getParentFragmentManager().popBackStack();
             }
         });

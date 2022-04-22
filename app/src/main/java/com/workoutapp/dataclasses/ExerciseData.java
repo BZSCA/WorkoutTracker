@@ -8,7 +8,7 @@ public class ExerciseData implements Serializable {
         this("", 10.0, 3, 10, 60);
     }
 
-    public ExerciseData(String name, double weight, double sets, int reps, int rest) {
+    public ExerciseData(String name, double weight, int sets, int reps, int rest) {
         this.name = name;
         this.weight = weight;
         this.sets = sets;
@@ -34,11 +34,11 @@ public class ExerciseData implements Serializable {
         this.weight = weight;
     }
 
-    public double getSets() {
+    public int getSets() {
         return sets;
     }
 
-    public void setSets(double sets) {
+    public void setSets(int sets) {
         this.sets = sets;
     }
 
@@ -59,7 +59,7 @@ public class ExerciseData implements Serializable {
     }
 
     private double weight;
-    private double sets;
+    private int sets;
     private int reps;
     private int rest;
 

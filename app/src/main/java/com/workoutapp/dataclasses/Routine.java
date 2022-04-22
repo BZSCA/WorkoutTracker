@@ -16,12 +16,10 @@ public class Routine implements Serializable {
 
     String name;
     ArrayList<Workout> workouts;
-    Routine.Interface routineInterface;
 
-    public Routine(String name, Routine.Interface routineInterface) {
+    public Routine(String name) {
         this.name = name;
         this.workouts = new ArrayList<>();
-        this.routineInterface = routineInterface;
     }
 
     public Routine(String name, ArrayList<Workout> workouts) {
@@ -37,26 +35,22 @@ public class Routine implements Serializable {
         return this.workouts;
     }
 
-    public void saveRoutine(){
-        routineInterface.buildToolbar(this);
-        File routine = new File(MyApp.getContext().getDataDir(), "/Routines" +  name +  ".rtn");
-        try {
-            FileOutputStream fileOut = new FileOutputStream(routine);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this);
-            out.close();
-            fileOut.close();
-        } catch (IOException e) {
-            Log.e("Save exception", e.toString());
-        }
-    }
-
     public void setName(String string) {
         this.name = string;;
     }
 
-    public interface Interface{
-        void buildToolbar(Routine routine);
+    public static void saveRoutine(Routine routine){
+        File file = new File(MyApp.getContext().getDataDir(), "/Routines/" +  routine.getName() +  ".rtn");
+        try {
+            FileOutputStream fileOut = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(routine);
+            out.close();
+            fileOut.close();
+        } catch (IOException e) {
+            Log.e("Error saving routine exception", e.toString());
+        }
+
     }
 
 }

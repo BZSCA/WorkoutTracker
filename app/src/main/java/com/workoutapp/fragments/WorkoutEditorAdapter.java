@@ -90,7 +90,7 @@ public class WorkoutEditorAdapter extends RecyclerView.Adapter<WorkoutEditorAdap
                             (keyCode == KeyEvent.KEYCODE_ENTER)) {
                         // Perform action on key press
                         int position = getBindingAdapterPosition();
-                        exerciseDataList.get(position).setSets(Double.parseDouble(String.valueOf(sets.getText())));
+                        exerciseDataList.get(position).setSets(Integer.parseInt(String.valueOf(sets.getText())));
                         notifyItemChanged(position);
                     }
                     return true;
