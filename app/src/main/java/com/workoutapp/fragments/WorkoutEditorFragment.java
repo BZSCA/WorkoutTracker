@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.workoutapp.MyApp;
 import com.workoutapp.R;
 import com.workoutapp.dataclasses.Routine;
+import com.workoutapp.dataclasses.RoutineManager;
 import com.workoutapp.dataclasses.Workout;
 
 import java.io.File;
@@ -36,10 +37,11 @@ import java.time.DayOfWeek;
  */
 public class WorkoutEditorFragment extends Fragment {
 
-    int position;
-    Routine routine;
-    WorkoutEditorAdapter adapter;
-    Spinner spinner;
+    private int position;
+    private Routine routine;
+    private RoutineManager routineManager;
+    private WorkoutEditorAdapter adapter;
+    private Spinner spinner;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,11 +49,12 @@ public class WorkoutEditorFragment extends Fragment {
     private static final String ARG_PARAM2 = "position";
     private static final String ARG_PARAM3 = "parentFragment";
 
-    public WorkoutEditorFragment() {
+    public WorkoutEditorFragment(RoutineManager routineManager) {
+        this.routineManager = routineManager;
     }
 
-    public static WorkoutEditorFragment newInstance(Routine routine, int position) {
-        WorkoutEditorFragment fragment = new WorkoutEditorFragment();
+    public static WorkoutEditorFragment newInstance(Routine routine, int position, RoutineManager routineManager) {
+        WorkoutEditorFragment fragment = new WorkoutEditorFragment(routineManager);
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, routine);
         args.putInt(ARG_PARAM2, position);
@@ -100,7 +103,7 @@ public class WorkoutEditorFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 routine.getWorkouts().get(position).setDayOfWeek(DayOfWeek.values()[i]);
-                Routine.saveRoutine(routine);
+                routineManager.saveRoutines();
             }
 
             @Override
@@ -127,7 +130,7 @@ public class WorkoutEditorFragment extends Fragment {
             public void onClick(View view) {
                 adapter.saveAll();
                 workout.updateWorkout();
-                Routine.saveRoutine(routine);
+                routineManager.saveRoutines();
                 getParentFragmentManager().popBackStack();
             }
         });

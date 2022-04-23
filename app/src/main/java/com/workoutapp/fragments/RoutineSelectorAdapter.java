@@ -1,6 +1,7 @@
 package com.workoutapp.fragments;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.workoutapp.MyApp;
 import com.workoutapp.R;
 import com.workoutapp.dataclasses.Routine;
+import com.workoutapp.dataclasses.RoutineManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,14 +23,14 @@ import java.util.List;
 
 public class RoutineSelectorAdapter extends RecyclerView.Adapter<RoutineSelectorAdapter.ViewHolder> {
 
-    private List<Routine> routines;
+    private final RoutineManager routineManager;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    RoutineSelectorAdapter(Context context) {
-        getRoutines();
+    RoutineSelectorAdapter(Context context, RoutineManager routineManager) {
         this.mInflater = LayoutInflater.from(context);
+        this.routineManager = routineManager;
     }
 
     // inflates the row layout from xml when needed
@@ -41,14 +43,14 @@ public class RoutineSelectorAdapter extends RecyclerView.Adapter<RoutineSelector
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String name = routines.get(position).getName();
+        String name = routineManager.getRoutines().get(position).getName();
         holder.myTextView.setText(name);
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return routines.size();
+        return routineManager.getRoutines().size();
     }
 
     // stores and recycles views as they are scrolled off screen
@@ -70,25 +72,6 @@ public class RoutineSelectorAdapter extends RecyclerView.Adapter<RoutineSelector
     // allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
-    }
-
-    public void getRoutines(){
-        ArrayList<Routine> routines = new ArrayList<>();
-        File folder = new File(MyApp.getContext().getDataDir(), "/Routines");
-
-        for (final File file : folder.listFiles()){
-            try {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                ObjectInputStream in = new ObjectInputStream(fileInputStream);
-
-                // Method for deserialization of object
-                routines.add( (Routine) in.readObject() );
-            } catch (IOException | ClassNotFoundException e){
-                e.printStackTrace();
-            }
-        }
-        this.routines = routines;
-        notifyDataSetChanged();
     }
 
     // parent activity will implement this method to respond to click events

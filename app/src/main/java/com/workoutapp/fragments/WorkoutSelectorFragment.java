@@ -20,6 +20,7 @@ import com.workoutapp.MyApp;
 import com.workoutapp.R;
 import com.workoutapp.dataclasses.ExerciseData;
 import com.workoutapp.dataclasses.Routine;
+import com.workoutapp.dataclasses.RoutineManager;
 import com.workoutapp.dataclasses.Workout;
 
 import java.io.File;
@@ -38,18 +39,18 @@ public class WorkoutSelectorFragment extends Fragment implements WorkoutSelector
 
     private static final String ARG_PARAM2 = "routine";
     private WorkoutSelectorAdapter adapter;
+    private RoutineManager routineManager;
     private Routine routine;
-    private WorkoutSelectorFragment.Interface mainActivity;
 
-    public WorkoutSelectorFragment(WorkoutSelectorFragment.Interface mainActivity) {
-        this.mainActivity = mainActivity;
+    public WorkoutSelectorFragment(RoutineManager routineManager) {
+        this.routineManager = routineManager;
         // Required empty public constructor
     }
 
-    public static WorkoutSelectorFragment newInstance(Routine routine, WorkoutSelectorFragment.Interface mainActivity) {
-        WorkoutSelectorFragment fragment = new WorkoutSelectorFragment(mainActivity);
+    public static WorkoutSelectorFragment newInstance(RoutineManager routineManager) {
+        WorkoutSelectorFragment fragment = new WorkoutSelectorFragment(routineManager);
         Bundle args = new Bundle();
-        args.putSerializable(ARG_PARAM2, routine);
+        args.putSerializable(ARG_PARAM2, routineManager.getCurrentRoutine());
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,7 +79,7 @@ public class WorkoutSelectorFragment extends Fragment implements WorkoutSelector
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Perform action on key press
                     routine.setName(String.valueOf(routineName.getText()));
-                    saveRoutine(routine);
+                    routineManager.saveRoutines();
                 }
                 return true;
             }
@@ -121,7 +122,7 @@ public class WorkoutSelectorFragment extends Fragment implements WorkoutSelector
 
     @Override
     public void onItemClick(View view, int position) {
-        replaceFragment(WorkoutEditorFragment.newInstance(routine, position));
+        replaceFragment(WorkoutEditorFragment.newInstance(routine, position, routineManager));
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -130,15 +131,5 @@ public class WorkoutSelectorFragment extends Fragment implements WorkoutSelector
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
-    }
-
-
-    public void saveRoutine(Routine routine){
-        mainActivity.buildToolbar(routine);
-        Routine.saveRoutine(routine);
-    }
-
-    public interface Interface {
-        void buildToolbar(Routine routine);
     }
 }

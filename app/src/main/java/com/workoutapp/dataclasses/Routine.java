@@ -39,18 +39,4 @@ public class Routine implements Serializable {
         this.name = string;;
     }
 
-    public static void saveRoutine(Routine routine){
-        File file = new File(MyApp.getContext().getDataDir(), "/Routines/" +  routine.getName() +  ".rtn");
-        try {
-            FileOutputStream fileOut = new FileOutputStream(file);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(routine);
-            out.close();
-            fileOut.close();
-        } catch (IOException e) {
-            Log.e("Error saving routine exception", e.toString());
-        }
-
-    }
-
 }

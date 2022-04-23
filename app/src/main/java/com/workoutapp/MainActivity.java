@@ -20,6 +20,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.workoutapp.dataclasses.ExerciseData;
 import com.workoutapp.dataclasses.Routine;
+import com.workoutapp.dataclasses.RoutineManager;
 import com.workoutapp.dataclasses.Workout;
 import com.workoutapp.fragments.RoutineSelectorAdapter;
 import com.workoutapp.fragments.RoutineSelectorFragment;
@@ -33,18 +34,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.time.DayOfWeek;
+import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements WorkoutSelectorFragment.Interface{
+public class MainActivity extends AppCompatActivity {
 
 
     private ArrayList<WorkoutFragment> workoutFragments;
-    private ArrayList<PrimaryDrawerItem> drawerWorkouts;
     private Drawer result;
     private TextView toolbarTitle;
     private WorkoutSelectorFragment workoutSelectorFragment;
     private RoutineSelectorFragment routineSelectorFragment;
+    private RoutineManager routineManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,35 +56,40 @@ public class MainActivity extends AppCompatActivity implements WorkoutSelectorFr
 
         createDirectories();
 
+        routineManager = new RoutineManager();
+
         setContentView(R.layout.activity_main);
         toolbarTitle = findViewById(R.id.toolbarTitle);
 
-        Routine routine = new Routine("TestRoutine");
-
-        ArrayList<ExerciseData> exercises = new ArrayList<>();
-
-        exercises.add(new ExerciseData("dips", 5.0, 4, 10, 100));
-        exercises.add(new ExerciseData("curls", 20.0, 3, 12, 60));
-        routine.getWorkouts().add(new Workout("Arms?", DayOfWeek.FRIDAY, new ArrayList<>(exercises)));
-
-        exercises.clear();
-        exercises.add(new ExerciseData("squats", 5.0, 4, 10, 100));
-        exercises.add(new ExerciseData("lunges", 20.0, 3, 12, 60));
-        routine.getWorkouts().add(new Workout("Legs", DayOfWeek.TUESDAY, new ArrayList<>(exercises)));
-
         workoutFragments = new ArrayList<>();
 
-        for (Workout w : routine.getWorkouts()) {
-            workoutFragments.add(WorkoutFragment.newInstance(w));
+        SimpleDateFormat formatter = new SimpleDateFormat("u");
+        Date date = new Date();
+        Log.i("date", formatter.format(date));
+        int dayOfWeek = Integer.parseInt(formatter.format(date));
+
+        int workoutNum = 0;
+
+        ArrayList<Workout> workouts = routineManager.getCurrentRoutine().getWorkouts();
+
+        for (int i = 0; i < workouts.size(); i++){
+            workoutFragments.add(WorkoutFragment.newInstance(workouts.get(i)));
+            if( workouts.get(i).getDayOfWeek().ordinal() == dayOfWeek){
+                workoutNum = i;
+            }
         }
 
-        workoutSelectorFragment = workoutSelectorFragment.newInstance(routine, this);
-        routineSelectorFragment = routineSelectorFragment.newInstance();
+        for (Workout w : routineManager.getCurrentRoutine().getWorkouts()) {
+            workoutFragments.add(WorkoutFragment.newInstance(w));
 
-        replaceFragment(workoutFragments.get(0));
+        }
 
-        buildToolbar(routine);
+        workoutSelectorFragment = workoutSelectorFragment.newInstance(routineManager);
+        routineSelectorFragment = routineSelectorFragment.newInstance(routineManager);
 
+        replaceFragment(workoutFragments.get(workoutNum));
+
+        buildToolbar(routineManager.getCurrentRoutine());
 
     }
 
@@ -106,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements WorkoutSelectorFr
         }
     }
 
-    @Override
     public void buildToolbar(Routine routine) {
         androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -157,10 +164,6 @@ public class MainActivity extends AppCompatActivity implements WorkoutSelectorFr
         }).build();
     }
 
-    public void setRoutine(){
-
-    }
-
     private void createDirectories(){
         File routines = new File(MyApp.getContext().getDataDir(), "/Routines");
         if (routines.isDirectory()){
@@ -174,19 +177,6 @@ public class MainActivity extends AppCompatActivity implements WorkoutSelectorFr
         if (!workoutHistory.isDirectory()){
             workoutHistory.mkdir();
         }
-    }
-
-    private Routine getDefaultRoutine(){
-        SharedPreferences sharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
-        String routineDefault = sharedPreferences.getString("routineDefault", null);
-
-        if (routineDefault == null){
-            ;
-        }
-        else{
-            ;
-        }
-        return null;
     }
 
 }

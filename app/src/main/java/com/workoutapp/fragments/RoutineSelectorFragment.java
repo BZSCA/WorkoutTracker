@@ -1,5 +1,7 @@
 package com.workoutapp.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 import com.workoutapp.MyApp;
 import com.workoutapp.R;
 import com.workoutapp.dataclasses.Routine;
+import com.workoutapp.dataclasses.RoutineManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,16 +40,18 @@ import java.util.List;
 public class RoutineSelectorFragment extends Fragment implements RoutineSelectorAdapter.ItemClickListener {
 
     private static final String ARG_PARAM1 = "param1";
-    RoutineSelectorAdapter adapter;
+    private RoutineSelectorAdapter adapter;
+    private RoutineManager routineManger;
 
     private String mParam1;
 
-    public RoutineSelectorFragment() {
+    public RoutineSelectorFragment(RoutineManager routineManager) {
         // Required empty public constructor
+        this.routineManger = routineManager;
     }
 
-    public static RoutineSelectorFragment newInstance() {
-        RoutineSelectorFragment fragment = new RoutineSelectorFragment();
+    public static RoutineSelectorFragment newInstance(RoutineManager routineManager) {
+        RoutineSelectorFragment fragment = new RoutineSelectorFragment(routineManager);
         Bundle args = new Bundle();
         //args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
@@ -68,7 +74,7 @@ public class RoutineSelectorFragment extends Fragment implements RoutineSelector
 
         RecyclerView recyclerView = view.findViewById(R.id.rvRoutineSelector);
         recyclerView.setLayoutManager(new LinearLayoutManager(MyApp.getContext()));
-        adapter = new RoutineSelectorAdapter(MyApp.getContext());
+        adapter = new RoutineSelectorAdapter(MyApp.getContext(), routineManger);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
@@ -93,8 +99,6 @@ public class RoutineSelectorFragment extends Fragment implements RoutineSelector
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
 
-
-
         // show the popup window
         // which view you pass in doesn't matter, it is only used for the window token
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
@@ -118,9 +122,9 @@ public class RoutineSelectorFragment extends Fragment implements RoutineSelector
                         Toast.makeText(MyApp.getContext(), "Routine name cannot be a duplicate", Toast.LENGTH_SHORT).show();
                         Log.i("Toast", "Routine name cannot be a duplicate");
                     } else{
-                        Routine.saveRoutine(new Routine(routineName));
+                        routineManger.addRoutine(new Routine(routineName));
                         popupWindow.dismiss();
-                        adapter.getRoutines();
+                        adapter.notifyDataSetChanged();
 
                     }
                 }
@@ -135,9 +139,11 @@ public class RoutineSelectorFragment extends Fragment implements RoutineSelector
         });
     }
 
-
     @Override
     public void onItemClick(View view, int position) {
-        //sharedPreferences.edit().putString("saved routine");
+        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt("routine position", position);
+        routineManger.setCurrentRoutine(position);
     }
+
 }
